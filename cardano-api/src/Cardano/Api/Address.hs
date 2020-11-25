@@ -383,6 +383,10 @@ anyAddressInEra (AddressShelley addr) =
       LegacyByronEra      -> Nothing
       ShelleyBasedEra era -> Just (AddressInEra (ShelleyAddressInEra era) addr)
 
+toAddressAny :: Address addr -> AddressAny
+toAddressAny = \case
+  a@ShelleyAddress{} -> AddressShelley a
+  a@ByronAddress{}   -> AddressByron a
 
 makeByronAddressInEra :: NetworkId
                       -> VerificationKey ByronKey

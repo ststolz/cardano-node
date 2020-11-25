@@ -352,7 +352,6 @@ timelockToSimpleScript signaturesInEra timeLocksInEra = go
     go (Timelock.RequireMOf      i s) = RequireMOf i (map go (toList s))
 
 
-
 --
 -- JSON serialisation
 --

@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE PatternSynonyms #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -32,6 +33,7 @@ module Cardano.Api.Address (
     shelleyAddressInEra,
     anyAddressInShelleyBasedEra,
     anyAddressInEra,
+    toAddressAny,
     makeByronAddressInEra,
     makeShelleyAddressInEra,
 
@@ -47,6 +49,10 @@ module Cardano.Api.Address (
     toShelleyAddr,
     toShelleyStakeAddr,
     toShelleyStakeCredential,
+
+    fromShelleyPaymentCredential,
+    fromShelleyStakeCredential,
+    fromShelleyStakeReference,
 
     -- * Serialising addresses
     SerialiseAddress(..),
@@ -530,3 +536,22 @@ toShelleyStakeReference (StakeAddressByPointer ptr) =
     Shelley.StakeRefPtr ptr
 toShelleyStakeReference  NoStakeAddress =
     Shelley.StakeRefNull
+
+fromShelleyPaymentCredential ::
+  Shelley.PaymentCredential StandardShelley -> PaymentCredential
+fromShelleyPaymentCredential = \case
+  Shelley.KeyHashObj    kh -> PaymentCredentialByKey (PaymentKeyHash kh)
+  Shelley.ScriptHashObj sh -> PaymentCredentialByScript (ScriptHash sh)
+
+fromShelleyStakeCredential ::
+  Shelley.StakeCredential StandardShelley -> StakeCredential
+fromShelleyStakeCredential = \case
+  Shelley.KeyHashObj kh -> StakeCredentialByKey (StakeKeyHash kh)
+  Shelley.ScriptHashObj sh -> StakeCredentialByScript (ScriptHash sh)
+
+fromShelleyStakeReference ::
+  Shelley.StakeReference StandardShelley -> StakeAddressReference
+fromShelleyStakeReference = \case
+  Shelley.StakeRefBase stakecred -> StakeAddressByValue (fromShelleyStakeCredential stakecred)
+  Shelley.StakeRefPtr ptr -> StakeAddressByPointer ptr
+  Shelley.StakeRefNull -> NoStakeAddress

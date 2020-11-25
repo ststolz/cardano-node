@@ -65,7 +65,10 @@ module Cardano.API (
     -- ** Shelley addresses
     makeShelleyAddress,
     PaymentCredential(..),
+    fromShelleyPaymentCredential,
+    fromShelleyStakeCredential,
     StakeAddressReference(..),
+    fromShelleyStakeReference,
     PaymentKey,
     PaymentExtendedKey,
 

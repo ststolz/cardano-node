@@ -119,6 +119,7 @@ module Cardano.API (
     TxBody,
     makeTransactionBody,
     TxBodyContent(..),
+    TxBodyError(..),
 
     -- ** Transaction Ids
     TxId,
